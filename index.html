@@ -3,15 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تتبع الخدمات الذكية</title>
+    <title>لوحة التحكم | الخدمات الذكية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
-        /* كود الألوان والتنسيق الاحترافي */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
+        :root {
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --primary-color: #2563eb;
+            --border-color: #e5e7eb;
+            
+            /* ألوان الحالات */
+            --status-new-bg: #e0f2fe;
+            --status-new-text: #0369a1;
+            --status-progress-bg: #fef3c7;
+            --status-progress-text: #b45309;
+            --status-completed-bg: #dcfce7;
+            --status-completed-text: #15803d;
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
             padding: 20px;
-            color: #333;
         }
 
         .dashboard-container {
@@ -20,281 +41,342 @@
         }
 
         header {
-            background: linear-gradient(135deg, #1f883d, #145d41);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            margin-bottom: 25px;
         }
 
-        .add-btn {
-            background-color: #ffffff;
-            color: #145d41;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: 0.3s;
+        header h1 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
         }
 
-        .add-btn:hover {
-            background-color: #e8f5e9;
-        }
-
-        .stats-section {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 30px;
+        /* كروت الإحصائيات */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
         }
 
         .stat-card {
-            flex: 1;
-            background: white;
+            background-color: var(--card-bg);
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            font-weight: bold;
-            font-size: 16px;
-            border-right: 5px solid #1f883d;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border-right: 5px solid var(--primary-color);
         }
 
-        .stat-card span {
-            display: block;
-            font-size: 28px;
-            color: #1f883d;
-            margin-top: 5px;
+        .stat-card.new { border-color: var(--status-new-text); }
+        .stat-card.progress { border-color: var(--status-progress-text); }
+        .stat-card.completed { border-color: var(--status-completed-text); }
+
+        .stat-card h3 {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-bottom: 8px;
         }
 
-        .orders-section {
-            background: white;
-            padding: 22px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        .stat-card .number {
+            font-size: 1.8rem;
+            font-weight: 800;
         }
 
-        .orders-section h2 {
-            margin-top: 0;
+        /* قسم النموذج والشريط العلوي */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 850px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-section, .table-section {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
             margin-bottom: 15px;
-            color: #145d41;
+            color: var(--text-main);
+        }
+
+        /* النموذج */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--primary-color);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.9;
+        }
+
+        /* البحث والجدول */
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .search-input {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            width: 200px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
+            text-align: right;
         }
 
         th, td {
-            padding: 12px 15px;
-            text-align: right;
-            border-bottom: 1px solid #ddd;
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
         }
 
         th {
-            background-color: #f8faf9;
-            color: #555;
-            font-weight: 600;
+            background-color: #f9fafb;
+            color: #4b5563;
         }
 
-        tr:hover {
-            background-color: #f9fbf9;
+        /* الشارات Badges */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-block;
         }
 
-        /* تنسيق الشاشة المنبثقة */
-        .modal {
-            display: none; 
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
+        .badge.جديد { background-color: var(--status-new-bg); color: var(--status-new-text); }
+        .badge.جاري-التنفيذ { background-color: var(--status-progress-bg); color: var(--status-progress-text); }
+        .badge.مكتمل { background-color: var(--status-completed-bg); color: var(--status-completed-text); }
+
+        /* إجراءات الجدول */
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-left: 5px;
+            padding: 2px 6px;
+            border-radius: 4px;
         }
 
-        .modal-content {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-
-        .modal-content h3 { margin-top: 0; color: #145d41; }
-
-        .form-group { margin-bottom: 15px; }
-
-        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-
-        .form-group input, .form-group select {
-            width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;
-        }
-
-        .form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
-
-        .btn-submit { background-color: #1f883d; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; }
-
-        .btn-cancel { background-color: #aaa; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; }
+        .btn-status { color: var(--primary-color); }
+        .btn-delete { color: #dc2626; }
     </style>
 </head>
 <body>
+
     <div class="dashboard-container">
         <header>
-            <div>
-                <h1>منصة الخدمات الذكية - لوحة التحكم</h1>
-                <p>مرحباً بكِ، أهلاً بإدارة النظام</p>
-            </div>
-            <button class="add-btn" id="open-modal-btn">+ إضافة طلب جديد</button>
+            <h1>لوحة تحكم الخدمات الذكية 📊</h1>
         </header>
 
-        <!-- كروت العدادات التفاعلية -->
-        <section class="stats-section">
-            <div class="stat-card">الطلبات الجديدة: <span id="new-count">0</span></div>
-            <div class="stat-card">قيد التنفيذ: <span id="progress-count">0</span></div>
-            <div class="stat-card">المكتملة: <span id="completed-count">0</span></div>
-        </section>
+        <!-- قسم الإحصائيات -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>إجمالي الطلبات</h3>
+                <div class="number" id="total-count">0</div>
+            </div>
+            <div class="stat-card new">
+                <h3>طلبات جديدة</h3>
+                <div class="number" id="new-count">0</div>
+            </div>
+            <div class="stat-card progress">
+                <h3>جاري التنفيذ</h3>
+                <div class="number" id="progress-count">0</div>
+            </div>
+            <div class="stat-card completed">
+                <h3>الطلبات المكتملة</h3>
+                <div class="number" id="completed-count">0</div>
+            </div>
+        </div>
 
-        <!-- جدول البيانات -->
-        <section class="orders-section">
-            <h2>قائمة الطلبات الحالية</h2>
-            <table id="orders-table">
-                <thead>
-                    <tr>
-                        <th>رقم الطلب</th>
-                        <th>اسم العميل</th>
-                        <th>الخدمة المطلوبة</th>
-                        <th>الحالة</th>
-                    </tr>
-                </thead>
-                <tbody id="orders-body">
-                    <tr>
-                        <td>#1001</td>
-                        <td>أحمد محمد</td>
-                        <td>صيانة تكييف مركزي</td>
-                        <td class="status-badge" style="color: #1f883d; font-weight: bold;">جديد</td>
-                    </tr>
-                    <tr>
-                        <td>#1002</td>
-                        <td>سارة أحمد</td>
-                        <td>تركيب نظام إضاءة ذكي</td>
-                        <td class="status-badge" style="color: #bc4c00; font-weight: bold;">جاري التنفيذ</td>
-                    </tr>
-                    <tr>
-                        <td>#1003</td>
-                        <td>محمود علي</td>
-                        <td>فحص شبكة الإنترنت المنزلية</td>
-                        <td class="status-badge" style="color: #24292f; font-weight: bold;">مكتمل</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-    </div>
-
-    <!-- شاشة إدخال البيانات المنبثقة -->
-    <div class="modal" id="order-modal">
-        <div class="modal-content">
-            <h3>إضافة طلب صيانة جديد</h3>
-            <form id="order-form">
-                <div class="form-group">
-                    <label>اسم العميل:</label>
-                    <input type="text" id="client-name" required>
-                </div>
-                <div class="form-group">
-                    <label>الخدمة المطلوبة:</label>
-                    <input type="text" id="service-name" required>
-                </div>
-                <div class="form-group">
-                    <label>حالة الطلب:</label>
-                    <select id="order-status">
-                        <option value="جديد">جديد</option>
-                        <option value="جاري التنفيذ">جاري التنفيذ</option>
-                        <option value="مكتمل">مكتمل</option>
-                    </select>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn-cancel" id="close-modal-btn">إلغاء</button>
+        <!-- المحتوى الرئيسي -->
+        <div class="main-content">
+            
+            <!-- نموذج إضافة طلب -->
+            <section class="form-section">
+                <h2 class="section-title">إضافة طلب جديد</h2>
+                <form id="order-form">
+                    <div class="form-group">
+                        <label for="client-name">اسم العميل</label>
+                        <input type="text" id="client-name" placeholder="أدخل اسم العميل" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="service-type">نوع الخدمة</label>
+                        <input type="text" id="service-type" placeholder="مثال: صيانة، تركيب..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="order-status">حالة الطلب</label>
+                        <select id="order-status">
+                            <option value="جديد">جديد</option>
+                            <option value="جاري التنفيذ">جاري التنفيذ</option>
+                            <option value="مكتمل">مكتمل</option>
+                        </select>
+                    </div>
                     <button type="submit" class="btn-submit">حفظ الطلب</button>
+                </form>
+            </section>
+
+            <!-- جدول عرض الطلبات -->
+            <section class="table-section">
+                <div class="table-header">
+                    <h2 class="section-title">قائمة الطلبات</h2>
+                    <input type="text" id="search-input" class="search-input" placeholder="بحث باسم العميل...">
                 </div>
-            </form>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>رقم الطلب</th>
+                                <th>العميل</th>
+                                <th>الخدمة</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-tbody">
+                            <!-- البيانات تضاف هنا ديناميكياً -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
         </div>
     </div>
 
-    <!-- كود الجافا سكريبت لتشغيل الحركة واستخدام المتغيرات المدمجة -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const modal = document.getElementById("order-modal");
-            const openModalBtn = document.getElementById("open-modal-btn");
-            const closeModalBtn = document.getElementById("close-modal-btn");
-            const orderForm = document.getElementById("order-form");
-            const ordersBody = document.getElementById("orders-body");
+        // مصفوفة لتخزين البيانات مبدئياً
+        let orders = [
+            { id: '#1001', client: 'أحمد محمود', service: 'صيانة تكييف', status: 'جديد' },
+            { id: '#1002', client: 'شركة الأمل', service: 'تركيب شبكات', status: 'جاري التنفيذ' },
+            { id: '#1003', client: 'سارة علي', service: 'استشارة فنية', status: 'مكتمل' }
+        ];
 
-            let orderIdCounter = 1004;
+        // 1. عرض الطلبات في الجدول
+        function renderOrders(ordersToDisplay = orders) {
+            const tbody = document.getElementById('orders-tbody');
+            tbody.innerHTML = '';
 
-            // دالة تحديث العدادات الذكية
-            function updateCounters() {
-                const rows = document.querySelectorAll("#orders-body tr");
-                let newCount = 0, progressCount = 0, completedCount = 0;
+            ordersToDisplay.forEach((order, index) => {
+                const tr = document.createElement('tr');
+                const statusClass = order.status.replace(' ', '-');
 
-                rows.forEach(row => {
-                    const badge = row.querySelector(".status-badge");
-                    if (badge) {
-                        const currentStatus = badge.textContent.trim(); // استخدام القيمة الحالية مباشرة
-                        if (currentStatus === "جديد") newCount++;
-                        else if (currentStatus === "جاري التنفيذ") progressCount++;
-                        else if (currentStatus === "مكتمل") completedCount++;
-                    }
-                });
+                tr.innerHTML = `
+                    <td><strong>${order.id}</strong></td>
+                    <td>${order.client}</td>
+                    <td>${order.service}</td>
+                    <td><span class="badge ${statusClass}">${order.status}</span></td>
+                    <td>
+                        <button class="action-btn btn-status" onclick="toggleStatus(${index})">تغيير الحالة 🔄</button>
+                        <button class="action-btn btn-delete" onclick="deleteOrder(${index})">حذف 🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
 
-                document.getElementById("new-count").textContent = newCount;
-                document.getElementById("progress-count").textContent = progressCount;
-                document.getElementById("completed-count").textContent = completedCount;
-            }
+            updateStats();
+        }
 
-            updateCounters();
+        // 2. تحديث الكروت والإحصائيات
+        function updateStats() {
+            document.getElementById('total-count').innerText = orders.length;
+            document.getElementById('new-count').innerText = orders.filter(o => o.status === 'جديد').length;
+            document.getElementById('progress-count').innerText = orders.filter(o => o.status === 'جاري التنفيذ').length;
+            document.getElementById('completed-count').innerText = orders.filter(o => o.status === 'مكتمل').length;
+        }
 
-            if(openModalBtn) {
-                openModalBtn.onclick = function() {
-                    modal.style.display = "flex";
-                }
-            }
+        // 3. إضافة طلب جديد
+        document.getElementById('order-form').addEventListener('submit', function(e) {
+            e.preventDefault();
 
-            if(closeModalBtn) {
-                closeModalBtn.onclick = function() {
-                    modal.style.display = "none";
-                    orderForm.reset();
-                }
-            }
+            const client = document.getElementById('client-name').value;
+            const service = document.getElementById('service-type').value;
+            const status = document.getElementById('order-status').value;
+            const id = '#' + Math.floor(1000 + Math.random() * 9000);
 
-            if(orderForm) {
-                orderForm.onsubmit = function(e) {
-                    e.preventDefault();
+            orders.push({ id, client, service, status });
+            
+            renderOrders();
+            this.reset();
+        });
 
-                    // سحب قيم المدخلات وتخزينها في المتغيرات البرمجية الخاصة بكِ
-                    const clientName = document.getElementById("client-name").value;
-                    const serviceName = document.getElementById("service-name").value;
-                    const orderStatus = document.getElementById("order-status").value; // تشغيل المتغير هنا رسمي
+        // 4. تغيير حالة الطلب عند الضغط على الزر
+        function toggleStatus(index) {
+            const statuses = ['جديد', 'جاري التنفيذ', 'مكتمل'];
+            let currentIdx = statuses.indexOf(orders[index].status);
+            orders[index].status = statuses[(currentIdx + 1) % statuses.length];
+            renderOrders();
+        }
 
-                    let statusColor = "#24292f";
-                    if (orderStatus === "جديد") statusColor = "#1f883d";
-                    else if (orderStatus === "جاري التنفيذ") statusColor = "#bc4c00";
-
-                    // بناء السطر الجديد وربطه بالمتغيرات
-const newRow = document.createElement("tr");
-                     newRow.innerHTML =
-                         ${orderIdCounter++}#
-                    ${clientName}
-                    ${serviceName}
-                    ${orderStatus}
-                    ;`
-                    ordersBody.appendChild(newRow);
-                updateCounters();
-                modal.style.display = "none";
-                orderForm.reset();
+        // 5. حذف طلب
+        function deleteOrder(index) {
+            if (confirm('هل أنتِ متأكدة من حذف هذا الطلب؟')) {
+                orders.splice(index, 1);
+                renderOrders();
             }
         }
-                                  });
+
+        // 6. تفعيل شريط البحث
+        document.getElementById('search-input').addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase();
+            const filtered = orders.filter(o => o.client.toLowerCase().includes(term) || o.id.includes(term));
+            renderOrders(filtered);
+        });
+
+        // التحميل الأولي عند فتح الصفحة
+        document.addEventListener('DOMContentLoaded', () => {
+            renderOrders();
+        });
+    </script>
+</body>
+</html>
