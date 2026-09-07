@@ -22,11 +22,20 @@
             --status-completed-text: #15803d;
         }
 
+        /* تنسيقات الوضع الليلي */
+        body.dark-mode {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --border-color: #334155;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
             font-family: 'Tajawal', sans-serif;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
         }
 
         body {
@@ -41,7 +50,12 @@
         }
 
         header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         header h1 {
@@ -71,7 +85,7 @@
 
         .stat-card h3 {
             font-size: 0.9rem;
-            color: #6b7280;
+            opacity: 0.8;
             margin-bottom: 8px;
         }
 
@@ -80,7 +94,7 @@
             font-weight: 800;
         }
 
-        /* قسم النموذج والشريط العلوي */
+        /* الهيكل الرئيسي */
         .main-content {
             display: grid;
             grid-template-columns: 1fr 2fr;
@@ -103,10 +117,9 @@
         .section-title {
             font-size: 1.2rem;
             margin-bottom: 15px;
-            color: var(--text-main);
         }
 
-        /* النموذج */
+        /* عناصر النموذج والمدخلات */
         .form-group {
             margin-bottom: 15px;
         }
@@ -118,35 +131,40 @@
             font-weight: 600;
         }
 
-        .form-group input, .form-group select {
+        .form-group input, .form-group select, .search-input {
             width: 100%;
             padding: 10px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             outline: none;
+            background-color: var(--card-bg);
+            color: var(--text-main);
         }
 
-        .form-group input:focus, .form-group select:focus {
+        .form-group input:focus, .form-group select:focus, .search-input:focus {
             border-color: var(--primary-color);
+        }
+
+        .btn-submit, .theme-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
         }
 
         .btn-submit {
             width: 100%;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
             padding: 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
         }
 
-        .btn-submit:hover {
+        .btn-submit:hover, .theme-btn:hover {
             opacity: 0.9;
         }
 
-        /* البحث والجدول */
+        /* الجدول والبحث */
         .table-header {
             display: flex;
             justify-content: space-between;
@@ -157,9 +175,6 @@
         }
 
         .search-input {
-            padding: 8px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
             width: 200px;
         }
 
@@ -180,11 +195,15 @@
         }
 
         th {
-            background-color: #f9fafb;
-            color: #4b5563;
+            background-color: rgba(0, 0, 0, 0.03);
+            color: var(--text-main);
         }
 
-        /* الشارات Badges */
+        body.dark-mode th {
+            background-color: #334155;
+        }
+
+        /* الشارات (Badges) */
         .badge {
             padding: 4px 10px;
             border-radius: 12px;
@@ -217,6 +236,7 @@
     <div class="dashboard-container">
         <header>
             <h1>لوحة تحكم الخدمات الذكية 📊</h1>
+            <button id="theme-btn" class="theme-btn">الوضع الليلي 🌙</button>
         </header>
 
         <!-- قسم الإحصائيات -->
@@ -295,14 +315,20 @@
     </div>
 
     <script>
-        // مصفوفة لتخزين البيانات مبدئياً
-        let orders = [
+        // 1. البيانات الأولية (أو استرجاعها من LocalStorage)
+        let defaultOrders = [
             { id: '#1001', client: 'أحمد محمود', service: 'صيانة تكييف', status: 'جديد' },
             { id: '#1002', client: 'شركة الأمل', service: 'تركيب شبكات', status: 'جاري التنفيذ' },
             { id: '#1003', client: 'سارة علي', service: 'استشارة فنية', status: 'مكتمل' }
         ];
 
-        // 1. عرض الطلبات في الجدول
+        let orders = JSON.parse(localStorage.getItem('myOrders')) || defaultOrders;
+
+        function saveToLocalStorage() {
+            localStorage.setItem('myOrders', JSON.stringify(orders));
+        }
+
+        // 2. عرض الطلبات
         function renderOrders(ordersToDisplay = orders) {
             const tbody = document.getElementById('orders-tbody');
             tbody.innerHTML = '';
@@ -327,7 +353,7 @@
             updateStats();
         }
 
-        // 2. تحديث الكروت والإحصائيات
+        // 3. تحديث الكروت والإحصائيات
         function updateStats() {
             document.getElementById('total-count').innerText = orders.length;
             document.getElementById('new-count').innerText = orders.filter(o => o.status === 'جديد').length;
@@ -335,7 +361,7 @@
             document.getElementById('completed-count').innerText = orders.filter(o => o.status === 'مكتمل').length;
         }
 
-        // 3. إضافة طلب جديد
+        // 4. إضافة طلب جديد
         document.getElementById('order-form').addEventListener('submit', function(e) {
             e.preventDefault();
 
@@ -345,35 +371,48 @@
             const id = '#' + Math.floor(1000 + Math.random() * 9000);
 
             orders.push({ id, client, service, status });
-            
+            saveToLocalStorage();
             renderOrders();
             this.reset();
         });
 
-        // 4. تغيير حالة الطلب عند الضغط على الزر
+        // 5. تغيير حالة الطلب
         function toggleStatus(index) {
             const statuses = ['جديد', 'جاري التنفيذ', 'مكتمل'];
             let currentIdx = statuses.indexOf(orders[index].status);
             orders[index].status = statuses[(currentIdx + 1) % statuses.length];
+            saveToLocalStorage();
             renderOrders();
         }
 
-        // 5. حذف طلب
+        // 6. حذف طلب
         function deleteOrder(index) {
             if (confirm('هل أنتِ متأكدة من حذف هذا الطلب؟')) {
                 orders.splice(index, 1);
+                saveToLocalStorage();
                 renderOrders();
             }
         }
 
-        // 6. تفعيل شريط البحث
+        // 7. تفعيل شريط البحث
         document.getElementById('search-input').addEventListener('input', function(e) {
             const term = e.target.value.toLowerCase();
             const filtered = orders.filter(o => o.client.toLowerCase().includes(term) || o.id.includes(term));
             renderOrders(filtered);
         });
 
-        // التحميل الأولي عند فتح الصفحة
+        // 8. الوضع الليلي (Dark Mode)
+        const themeBtn = document.getElementById('theme-btn');
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                themeBtn.innerText = 'الوضع الفاتح ☀️';
+            } else {
+                themeBtn.innerText = 'الوضع الليلي 🌙';
+            }
+        });
+
+        // التحميل الأولي
         document.addEventListener('DOMContentLoaded', () => {
             renderOrders();
         });
