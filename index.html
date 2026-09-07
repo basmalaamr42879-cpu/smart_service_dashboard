@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة تتبع الخدمات الذكية</title>
     <style>
+        /* كود الألوان والتنسيق الاحترافي */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f7f6;
@@ -104,7 +105,7 @@
             background-color: #f9fbf9;
         }
 
-        /* تنسيق النافذة المنبثقة (Popup) */
+        /* تنسيق الشاشة المنبثقة */
         .modal {
             display: none; 
             position: fixed;
@@ -148,16 +149,17 @@
                 <h1>منصة الخدمات الذكية - لوحة التحكم</h1>
                 <p>مرحباً بكِ، أهلاً بإدارة النظام</p>
             </div>
-            <!-- تأكدي من وجود المعرف id="open-modal-btn" -->
             <button class="add-btn" id="open-modal-btn">+ إضافة طلب جديد</button>
         </header>
 
+        <!-- كروت العدادات التفاعلية -->
         <section class="stats-section">
             <div class="stat-card">الطلبات الجديدة: <span id="new-count">0</span></div>
             <div class="stat-card">قيد التنفيذ: <span id="progress-count">0</span></div>
             <div class="stat-card">المكتملة: <span id="completed-count">0</span></div>
         </section>
 
+        <!-- جدول البيانات -->
         <section class="orders-section">
             <h2>قائمة الطلبات الحالية</h2>
             <table id="orders-table">
@@ -193,7 +195,7 @@
         </section>
     </div>
 
-    <!-- النافذة المنبثقة -->
+    <!-- شاشة إدخال البيانات المنبثقة -->
     <div class="modal" id="order-modal">
         <div class="modal-content">
             <h3>إضافة طلب صيانة جديد</h3>
@@ -222,7 +224,7 @@
         </div>
     </div>
 
-    <!-- كود التشغيل والحركة -->
+    <!-- كود الجافا سكريبت لتشغيل الحركة واستخدام المتغيرات المدمجة -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const modal = document.getElementById("order-modal");
@@ -233,6 +235,7 @@
 
             let orderIdCounter = 1004;
 
+            // دالة تحديث العدادات الذكية
             function updateCounters() {
                 const rows = document.querySelectorAll("#orders-body tr");
                 let newCount = 0, progressCount = 0, completedCount = 0;
@@ -240,10 +243,10 @@
                 rows.forEach(row => {
                     const badge = row.querySelector(".status-badge");
                     if (badge) {
-                        const statusText = badge.textContent.trim();
-                        if (statusText === "جديد") newCount++;
-                        else if (statusText === "جاري التنفيذ") progressCount++;
-                        else if (statusText === "مكتمل") completedCount++;
+                        const currentStatus = badge.textContent.trim(); // استخدام القيمة الحالية مباشرة
+                        if (currentStatus === "جديد") newCount++;
+                        else if (currentStatus === "جاري التنفيذ") progressCount++;
+                        else if (currentStatus === "مكتمل") completedCount++;
                     }
                 });
 
@@ -252,17 +255,14 @@
                 document.getElementById("completed-count").textContent = completedCount;
             }
 
-            // تحديث العدادات عند تحميل الصفحة
             updateCounters();
 
-            // فتح النافذة
             if(openModalBtn) {
                 openModalBtn.onclick = function() {
                     modal.style.display = "flex";
                 }
             }
 
-            // إغلاق النافذة
             if(closeModalBtn) {
                 closeModalBtn.onclick = function() {
                     modal.style.display = "none";
@@ -270,20 +270,31 @@
                 }
             }
 
-            // إدخال البيانات وحفظها ديناميكياً
             if(orderForm) {
                 orderForm.onsubmit = function(e) {
                     e.preventDefault();
 
+                    // سحب قيم المدخلات وتخزينها في المتغيرات البرمجية الخاصة بكِ
                     const clientName = document.getElementById("client-name").value;
                     const serviceName = document.getElementById("service-name").value;
-                    const orderStatus = document.getElementById("order-status").value;
+                    const orderStatus = document.getElementById("order-status").value; // تشغيل المتغير هنا رسمي
 
                     let statusColor = "#24292f";
                     if (orderStatus === "جديد") statusColor = "#1f883d";
                     else if (orderStatus === "جاري التنفيذ") statusColor = "#bc4c00";
 
-                    const newRow = document.createElement("tr");
-                    newRow.innerHTML = `
-                        <td>#${orderIdCounter++}</td>
-                        <td>${clientName}</td>
+                    // بناء السطر الجديد وربطه بالمتغيرات
+const newRow = document.createElement("tr");
+                     newRow.innerHTML =
+                         ${orderIdCounter++}#
+                    ${clientName}
+                    ${serviceName}
+                    ${orderStatus}
+                    ;`
+                    ordersBody.appendChild(newRow);
+                updateCounters();
+                modal.style.display = "none";
+                orderForm.reset();
+            }
+        }
+                                  });
