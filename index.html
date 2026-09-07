@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة تتبع الخدمات الذكية</title>
+    <!-- كود الربط السحري بملف الألوان والتنسيق -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="dashboard-container">
@@ -13,12 +14,14 @@
             <p>مرحباً بكِ، أهلاً بإدارة النظام</p>
         </header>
 
+        <!-- كروت الإحصائيات السريعة -->
         <section class="stats-section">
-            <div class="stat-card">الطلبات الجديدة: <span id="new-count">0</span></div>
-            <div class="stat-card">قيد التنفيذ: <span id="progress-count">0</span></div>
-            <div class="stat-card">المكتملة: <span id="completed-count">0</span></div>
+            <div class="stat-card">الطلبات الجديدة: <span id="new-count">3</span></div>
+            <div class="stat-card">قيد التنفيذ: <span id="progress-count">5</span></div>
+            <div class="stat-card">المكتملة: <span id="completed-count">12</span></div>
         </section>
 
+        <!-- جدول عرض الطلبات الحية لتجربة الموقع -->
         <section class="orders-section">
             <h2>قائمة الطلبات الحالية</h2>
             <table id="orders-table">
@@ -31,7 +34,24 @@
                     </tr>
                 </thead>
                 <tbody id="orders-body">
-                    <!-- البيانات ستظهر هنا ديناميكياً -->
+                    <tr>
+                        <td>#1001</td>
+                        <td>أحمد محمد</td>
+                        <td>صيانة تكييف مركزي</td>
+                        <td style="color: #1f883d; font-weight: bold;">جديد</td>
+                    </tr>
+                    <tr>
+                        <td>#1002</td>
+                        <td>سارة أحمد</td>
+                        <td>تركيب نظام إضاءة ذكي</td>
+                        <td style="color: #bc4c00; font-weight: bold;">جاري التنفيذ</td>
+                    </tr>
+                    <tr>
+                        <td>#1003</td>
+                        <td>محمود علي</td>
+                        <td>فحص شبكة الإنترنت المنزلية</td>
+                        <td style="color: #24292f; font-weight: bold;">مكتمل</td>
+                    </tr>
                 </tbody>
             </table>
         </section>
