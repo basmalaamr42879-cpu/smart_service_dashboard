@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة تتبع الخدمات الذكية</title>
     <style>
-        /* كود الألوان والتنسيق المتكامل */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f7f6;
@@ -31,7 +30,6 @@
             align-items: center;
         }
 
-        /* تنسيق زرار إضافة طلب جديد */
         .add-btn {
             background-color: #ffffff;
             color: #145d41;
@@ -106,7 +104,7 @@
             background-color: #f9fbf9;
         }
 
-        /* تنسيق النافذة المنبثقة (Popup Form) */
+        /* تنسيق النافذة المنبثقة (Popup) */
         .modal {
             display: none; 
             position: fixed;
@@ -114,6 +112,7 @@
             background-color: rgba(0,0,0,0.5);
             justify-content: center;
             align-items: center;
+            z-index: 1000;
         }
 
         .modal-content {
@@ -149,7 +148,7 @@
                 <h1>منصة الخدمات الذكية - لوحة التحكم</h1>
                 <p>مرحباً بكِ، أهلاً بإدارة النظام</p>
             </div>
-            <!-- زرار الإضافة الحقيقي -->
+            <!-- تأكدي من وجود المعرف id="open-modal-btn" -->
             <button class="add-btn" id="open-modal-btn">+ إضافة طلب جديد</button>
         </header>
 
@@ -194,7 +193,7 @@
         </section>
     </div>
 
-    <!-- النافذة المنبثقة لإدخال طلب جديد -->
+    <!-- النافذة المنبثقة -->
     <div class="modal" id="order-modal">
         <div class="modal-content">
             <h3>إضافة طلب صيانة جديد</h3>
@@ -223,7 +222,7 @@
         </div>
     </div>
 
-    <!-- كود الـ JavaScript الذكي لتشغيل الزرار وحساب العدادات فورياً -->
+    <!-- كود التشغيل والحركة -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const modal = document.getElementById("order-modal");
@@ -232,9 +231,8 @@
             const orderForm = document.getElementById("order-form");
             const ordersBody = document.getElementById("orders-body");
 
-            let orderIdCounter = 1004; // العداد هيبدأ من بعد أخر رقم طلب
+            let orderIdCounter = 1004;
 
-            // دالة ذكية لتحديث كروت الإحصائيات تلقائياً
             function updateCounters() {
                 const rows = document.querySelectorAll("#orders-body tr");
                 let newCount = 0, progressCount = 0, completedCount = 0;
@@ -254,29 +252,38 @@
                 document.getElementById("completed-count").textContent = completedCount;
             }
 
-            // تشغيل العدادات أول ما الصفحة تفتح
+            // تحديث العدادات عند تحميل الصفحة
             updateCounters();
 
-            // فتح النافذة عند الضغط على زرار الإضافة
-            openModalBtn.addEventListener("click", () => modal.style.display = "flex");
+            // فتح النافذة
+            if(openModalBtn) {
+                openModalBtn.onclick = function() {
+                    modal.style.display = "flex";
+                }
+            }
 
-            // إغلاق النافذة عند الضغط على إلغاء
-            closeModalBtn.addEventListener("click", () => {
-                modal.style.display = "none";
-                orderForm.reset();
-            });
+            // إغلاق النافذة
+            if(closeModalBtn) {
+                closeModalBtn.onclick = function() {
+                    modal.style.display = "none";
+                    orderForm.reset();
+                }
+            }
 
-            // برمجة عملية حفظ الطلب الجديد وإضافته حياً للجدول
-            orderForm.addEventListener("submit", function(e) {
-                e.preventDefault();
+            // إدخال البيانات وحفظها ديناميكياً
+            if(orderForm) {
+                orderForm.onsubmit = function(e) {
+                    e.preventDefault();
 
-                const clientName = document.getElementById("client-name").value;
-                const serviceName = document.getElementById("service-name").value;
-                const orderStatus = document.getElementById("order-status").value;
+                    const clientName = document.getElementById("client-name").value;
+                    const serviceName = document.getElementById("service-name").value;
+                    const orderStatus = document.getElementById("order-status").value;
 
-                // تحديد لون الحالة ذكياً حسب الاختيار
-                let statusColor = "#24292f";
-                if (orderStatus === "جديد") statusColor = "#1f883d";
-                else if (orderStatus === "جاري التنفيذ") statusColor = "#bc4c00";
+                    let statusColor = "#24292f";
+                    if (orderStatus === "جديد") statusColor = "#1f883d";
+                    else if (orderStatus === "جاري التنفيذ") statusColor = "#bc4c00";
 
-                // إنشاء الصف الجديد برمجياً
+                    const newRow = document.createElement("tr");
+                    newRow.innerHTML = `
+                        <td>#${orderIdCounter++}</td>
+                        <td>${clientName}</td>
